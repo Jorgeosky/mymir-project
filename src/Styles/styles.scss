@@ -56,6 +56,14 @@ body,
     padding: 20px;
     justify-content: space-around;
 
+    form {
+      width: 100%;
+      height: 40%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+    }
+
     button img {
       width: 30px;
       margin-right: 10px;
@@ -93,6 +101,45 @@ body,
 
     label {
       color: $colorSecondary;
+    }
+  }
+
+  .Container2 {
+    width: 30%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    border: 3px solid $colorSecondary;
+    border-radius: 30px;
+    padding: 20px;
+    justify-content: space-around;
+
+    form {
+      width: 100%;
+      height: 40%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+
+      button {
+        text-decoration: none;
+      }
+    }
+
+    h2,
+    h3,
+    h5 {
+      color: $colorSecondary;
+    }
+
+    h3 {
+      text-align: center;
+    }
+
+    button {
+      font-size: 20px;
+      margin: 0;
+      text-decoration: underline;
     }
   }
 }
