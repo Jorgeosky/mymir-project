@@ -1,25 +1,39 @@
 import { Input, Button } from '@nextui-org/react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { SignUp } from '../Query/Firebase';
+import { SignIn, SignInWithGoogle, SignUp } from '../Query/Firebase';
 
 export default function Login() {
   const [state, setState] = useState('LOGIN');
   const [validate, setValidate] = useState(true);
   const navigate = useNavigate();
 
-  function SendLogin(data: any) {
+  async function SendLoginUp(data: any) {
     data.preventDefault();
     const { Email, Password1, Password2 } = data.target.elements;
     if (Password1.value !== Password2.value) {
       setValidate(false);
     } else {
-      const data2 = SignUp(Email.value, Password1.value);
+      const data2 = await SignUp(Email.value, Password1.value);
       if (data2.state) {
         navigate('/');
-      } else {
-        console.log(data2.errorCode, data2.errorMessage);
       }
+    }
+  }
+
+  async function SendLoginIn(data: any) {
+    data.preventDefault();
+    const { Email, Password } = data.target.elements;
+    const data2 = await SignIn(Email.value, Password.value);
+    if (data2.state) {
+      navigate('/');
+    }
+  }
+
+  async function SendSignInWithGoogle() {
+    const data = await SignInWithGoogle();
+    if (data.state) {
+      navigate('/');
     }
   }
 
@@ -29,15 +43,15 @@ export default function Login() {
         <div className="Login">
           <div className="Container">
             <h2>LOGIN</h2>
-            <Button type="button" color="error" auto>
+            <Button type="submit" onClick={() => SendSignInWithGoogle()} color="error" auto>
               <img src="googleIcon.png" alt="googleIcon" />
               Continue with google
             </Button>
             <h3>Or</h3>
-            <form>
-              <Input placeholder="Email" />
-              <Input.Password placeholder="Password" />
-              <Button type="button" color="error" auto>
+            <form onSubmit={SendLoginIn}>
+              <Input id="Email" name="Email" placeholder="Email" />
+              <Input.Password id="Password" name="Password" placeholder="Password" />
+              <Button type="submit" color="error" auto>
                 Login
               </Button>
             </form>
@@ -74,7 +88,7 @@ export default function Login() {
               Continue with google
             </Button>
             <h3>Or</h3>
-            <form onSubmit={SendLogin}>
+            <form onSubmit={SendLoginUp}>
               <Input id="Email" name="Email" placeholder="Email" />
               <Input.Password
                 id="Password1"

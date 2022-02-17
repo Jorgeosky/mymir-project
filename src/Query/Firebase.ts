@@ -1,6 +1,19 @@
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  User,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from 'firebase/auth';
+
+interface Data {
+  state: boolean;
+  data?: User;
+  error?: Array<string>;
+}
 
 const firebaseConfig = {
   apiKey: 'AIzaSyB_HiwDTxu0iwDqzasdq4emsB3PdT-ufJU',
@@ -20,21 +33,68 @@ function getAnalyticsData() {
   return analytics;
 }
 
-function SignUp(email: string, password: string): any {
+function SignUp(email: string, password: string): Promise<Data> {
   const auth = getAuth();
-  createUserWithEmailAndPassword(auth, email, password)
+  return createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       // Signed in
       const { user } = userCredential;
-      console.log('valido');
-      return { state: true, user };
+      return { state: true, data: user };
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.log('no valido', error.code, error.message);
-      return { state: false, errorCode, errorMessage };
+      return { state: false, error: [errorCode, errorMessage] };
     });
 }
 
-export { SignUp, app, getAnalyticsData };
+function SignInWithGoogle() {
+  const provider = new GoogleAuthProvider();
+  const auth = getAuth();
+  return signInWithPopup(auth, provider)
+    .then((result) => {
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential?.accessToken;
+      // The signed-in user info.
+      const { user } = result;
+      // ...
+      return { state: true, token, user };
+    })
+    .catch((error) => {
+      // Handle Errors here.
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      // The email of the user's account used.
+      const { email } = error;
+      // The AuthCredential type that was used.
+      const credential = GoogleAuthProvider.credentialFromError(error);
+      // ...
+      return {
+        state: false,
+        errorCode,
+        errorMessage,
+        email,
+        credential,
+      };
+    });
+}
+
+function SignIn(email: string, password: string): Promise<Data> {
+  const auth = getAuth();
+  return signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      // Signed in
+      const { user } = userCredential;
+      return { state: true, data: user };
+      // ...
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      return { state: false, error: [errorCode, errorMessage] };
+    });
+}
+
+// eslint-disable-next-line object-curly-newline
+export { SignUp, app, getAnalyticsData, SignIn, SignInWithGoogle };
