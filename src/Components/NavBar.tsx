@@ -1,8 +1,9 @@
 import React from 'react';
 import { Text, Input, Avatar } from '@nextui-org/react';
 import { Link } from 'react-router-dom';
+import { GetUser } from '../Query/Firebase';
 
-const userValue: boolean = false;
+const userValue = GetUser();
 
 export default function NavBar() {
   return (
@@ -15,6 +16,7 @@ export default function NavBar() {
           width="500px"
           rounded
           placeholder="Search your product..."
+          aria-label="Search"
           color="error"
           type="search"
         />

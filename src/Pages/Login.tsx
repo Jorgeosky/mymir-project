@@ -1,7 +1,9 @@
 import { Input, Button } from '@nextui-org/react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { SignIn, SignInWithGoogle, SignUp } from '../Query/Firebase';
+import {
+  SignIn, SignInWithGoogle, SignUp, SignOutUser,
+} from '../Query/Firebase';
 
 export default function Login() {
   const [state, setState] = useState('LOGIN');
@@ -49,8 +51,8 @@ export default function Login() {
             </Button>
             <h3>Or</h3>
             <form onSubmit={SendLoginIn}>
-              <Input id="Email" name="Email" placeholder="Email" />
-              <Input.Password id="Password" name="Password" placeholder="Password" />
+              <Input id="Email" name="Email" aria-label="Email" placeholder="Email" />
+              <Input.Password id="Password" name="Password" aria-label="Password" placeholder="Password" />
               <Button type="submit" color="error" auto>
                 Login
               </Button>
@@ -89,15 +91,17 @@ export default function Login() {
             </Button>
             <h3>Or</h3>
             <form onSubmit={SendLoginUp}>
-              <Input id="Email" name="Email" placeholder="Email" />
+              <Input id="Email" aria-label="Email" name="Email" placeholder="Email" />
               <Input.Password
                 id="Password1"
                 name="Password1"
+                aria-label="Password1"
                 placeholder="Password"
               />
               <Input.Password
                 id="Password2"
                 name="Password2"
+                aria-label="Password2"
                 placeholder="Confirm Password"
               />
               {!validate ? <h4>the password is not coincided</h4> : ''}
@@ -129,8 +133,8 @@ export default function Login() {
           <div className="Container2">
             <h2>FORGOT PASSWORD</h2>
             <form>
-              <Input placeholder="Email" />
-              <Button type="button" color="error" auto>
+              <Input aria-label="Email" placeholder="Email" />
+              <Button type="button" onClick={() => SignOutUser()} color="error" auto>
                 Submit
               </Button>
             </form>

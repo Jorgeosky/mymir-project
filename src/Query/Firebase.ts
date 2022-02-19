@@ -7,6 +7,7 @@ import {
   User,
   GoogleAuthProvider,
   signInWithPopup,
+  signOut,
 } from 'firebase/auth';
 
 interface Data {
@@ -27,6 +28,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
 function getAnalyticsData() {
   const analytics = getAnalytics(app);
@@ -34,7 +36,6 @@ function getAnalyticsData() {
 }
 
 function SignUp(email: string, password: string): Promise<Data> {
-  const auth = getAuth();
   return createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       // Signed in
@@ -50,7 +51,6 @@ function SignUp(email: string, password: string): Promise<Data> {
 
 function SignInWithGoogle() {
   const provider = new GoogleAuthProvider();
-  const auth = getAuth();
   return signInWithPopup(auth, provider)
     .then((result) => {
       // This gives you a Google Access Token. You can use it to access the Google API.
@@ -59,7 +59,7 @@ function SignInWithGoogle() {
       // The signed-in user info.
       const { user } = result;
       // ...
-      return { state: true, token, user };
+      return { state: true, data: user, token };
     })
     .catch((error) => {
       // Handle Errors here.
@@ -81,7 +81,6 @@ function SignInWithGoogle() {
 }
 
 function SignIn(email: string, password: string): Promise<Data> {
-  const auth = getAuth();
   return signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       // Signed in
@@ -96,5 +95,28 @@ function SignIn(email: string, password: string): Promise<Data> {
     });
 }
 
+function SignOutUser() {
+  signOut(auth)
+    .then(() => {
+      const state = true;
+      return { state };
+    })
+    .catch((error) => {
+      const state = false;
+      return { state, error };
+    });
+}
+
+function GetUser() {
+  return auth.currentUser;
+}
+
 // eslint-disable-next-line object-curly-newline
-export { SignUp, app, getAnalyticsData, SignIn, SignInWithGoogle };
+export {
+  SignUp,
+  getAnalyticsData,
+  SignIn,
+  SignInWithGoogle,
+  SignOutUser,
+  GetUser,
+};
